@@ -54,8 +54,8 @@ STRIP_COLORS = ["#2F7A4F", "#3B7FB5", "#D9822B", "#E8C93B"]
 CONTACT_PHONE = "+27 00 000 0000"
 CONTACT_EMAIL = "hello@careercompass.co.za"
 # Optional: paths/URLs to real screenshots of the app in action.
-SCREENSHOT_1 = None
-SCREENSHOT_2 = None
+SCREENSHOT_1 = "Screenshot 2026-06-11 163438.png"
+SCREENSHOT_2 = "Screenshot 2026-06-11 163447.png"
 
 st.markdown(f"""
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
