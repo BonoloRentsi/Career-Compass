@@ -69,10 +69,13 @@ st.markdown(f"""
         font-weight: 600; margin: 0.15rem 0.35rem 0.15rem 0;
     }}
     .cc-question {{ font-size: 0.95rem; color: #262730; margin-bottom: 0.2rem; }}
-    .cc-sidebar-step {{ font-size: 0.92rem; padding: 0.25rem 0; }}
-    .cc-sidebar-step.done {{ color: {GREEN}; }}
-    .cc-sidebar-step.active {{ color: {BLUE_DEEP}; font-weight: 700; }}
-    .cc-sidebar-step.todo {{ color: #9AA7B0; }}
+    .cc-tabbar {{
+        display: flex; gap: 0.4rem; margin-bottom: 1.1rem;
+        border-bottom: 2px solid {LINE};
+    }}
+    .cc-tab {{
+        padding: 0.55rem 0.2rem; font-size: 0.9rem; text-align: center;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -91,28 +94,14 @@ if "step" not in st.session_state:
     st.session_state.step = 0
 if "answers" not in st.session_state:
     st.session_state.answers = {}
+if "max_reached" not in st.session_state:
+    st.session_state.max_reached = 0
 
 
 def goto(i):
     st.session_state.step = i
+    st.session_state.max_reached = max(st.session_state.max_reached, i)
 
-
-# ----------------------------------------------------------------------------
-# Sidebar — step tracker
-# ----------------------------------------------------------------------------
-with st.sidebar:
-    st.markdown("#### Your progress")
-    for i, name in enumerate(STEPS):
-        if i < st.session_state.step:
-            css_class, mark = "done", "✓"
-        elif i == st.session_state.step:
-            css_class, mark = "active", "●"
-        else:
-            css_class, mark = "todo", "○"
-        st.markdown(f'<div class="cc-sidebar-step {css_class}">{mark}&nbsp;&nbsp;{i + 1}. {name}</div>',
-                    unsafe_allow_html=True)
-    st.divider()
-    st.caption("Your answers are only used to generate your recommendations in this session.")
 
 # ----------------------------------------------------------------------------
 # Hero
@@ -126,7 +115,22 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.progress(st.session_state.step / (len(STEPS) - 1) if st.session_state.step < len(STEPS) else 1.0)
+# ----------------------------------------------------------------------------
+# Top tab bar — click a completed step to jump back to it
+# ----------------------------------------------------------------------------
+tab_cols = st.columns(len(STEPS))
+for i, (col, name) in enumerate(zip(tab_cols, STEPS)):
+    with col:
+        is_active = (i == st.session_state.step)
+        is_unlocked = (i <= st.session_state.max_reached)
+        is_done = (i < st.session_state.step)
+        prefix = "● " if is_active else ("✓ " if is_done else "")
+        label = f"{prefix}{i + 1}. {name}"
+        btn_type = "primary" if is_active else "secondary"
+        if st.button(label, key=f"tab_{i}", type=btn_type, disabled=not is_unlocked, use_container_width=True):
+            st.session_state.step = i
+            st.rerun()
+st.markdown(f'<div style="border-bottom:2px solid {LINE}; margin: -0.4rem 0 1.2rem 0;"></div>', unsafe_allow_html=True)
 
 
 def rating_grid(questions, key_prefix):
@@ -272,4 +276,5 @@ else:
     if st.button("↺ Start over"):
         st.session_state.step = 0
         st.session_state.answers = {}
+        st.session_state.max_reached = 0
         st.rerun()
