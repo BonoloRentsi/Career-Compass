@@ -57,6 +57,8 @@ CONTACT_EMAIL = "hello@careercompass.co.za"
 SCREENSHOT_1 = "Screenshot 2026-06-11 163438.png"
 SCREENSHOT_2 = "Screenshot 2026-06-11 163447.png"
 
+CONFUSION_IMAGE="Screenshot 2026-06-11 163348.png"
+
 st.markdown(f"""
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
