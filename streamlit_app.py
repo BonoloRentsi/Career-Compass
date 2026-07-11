@@ -62,6 +62,14 @@ st.markdown(f"""
 <style>
     .cc-serif {{ font-family: 'Fraunces', serif; }}
     .cc-question {{ font-size: 0.95rem; color: #262730; margin-bottom: 0.2rem; }}
+    /* Force full-width layout — Streamlit's "wide" mode still caps
+       .block-container at a max-width by default. */
+    .block-container {{
+        max-width: 100% !important;
+        padding-left: 2.5rem !important;
+        padding-right: 2.5rem !important;
+        padding-top: 1.5rem !important;
+    }}
     .cc-badge {{
         display: inline-block; background: {PALE_BLUE}; color: {NAVY_DARK};
         border-radius: 999px; padding: 0.2rem 0.75rem; font-size: 0.82rem;
@@ -178,6 +186,29 @@ with h_right:
         '<div class="cc-tagline">Navigate your future. Choose your path.</div>',
         unsafe_allow_html=True
     )
+
+st.write("")
+
+# ============================================================================
+# SCREENSHOTS — sit right below the header/logo lockup
+# ============================================================================
+shot_col1, shot_col2 = st.columns(2)
+for shot_col, shot_path, caption in (
+    (shot_col1, SCREENSHOT_1, "The questionnaire"),
+    (shot_col2, SCREENSHOT_2, "Your results"),
+):
+    with shot_col:
+        with st.container(border=True):
+            if shot_path:
+                st.image(shot_path, use_container_width=True)
+            else:
+                st.markdown(
+                    f'<div style="height:160px; display:flex; align-items:center; '
+                    f'justify-content:center; color:{INK_SOFT}; background:{PALE_BLUE}; '
+                    f'border-radius:10px; font-size:0.9rem;">📸 Add a screenshot here</div>',
+                    unsafe_allow_html=True
+                )
+            st.caption(caption)
 
 st.write("")
 
@@ -305,25 +336,6 @@ if st.session_state.page == "home":
                             unsafe_allow_html=True)
                 st.markdown(f'<div style="font-size:0.82rem; font-weight:600; color:{NAVY_DARK}; margin-top:0.5rem;">'
                             f'— {author}</div>', unsafe_allow_html=True)
-
-    st.write("")
-    shot_col1, shot_col2 = st.columns(2)
-    for shot_col, shot_path, caption in (
-        (shot_col1, SCREENSHOT_1, "The questionnaire"),
-        (shot_col2, SCREENSHOT_2, "Your results"),
-    ):
-        with shot_col:
-            with st.container(border=True):
-                if shot_path:
-                    st.image(shot_path, use_container_width=True)
-                else:
-                    st.markdown(
-                        f'<div style="height:160px; display:flex; align-items:center; '
-                        f'justify-content:center; color:{INK_SOFT}; background:{PALE_BLUE}; '
-                        f'border-radius:10px; font-size:0.9rem;">📸 Add a screenshot here</div>',
-                        unsafe_allow_html=True
-                    )
-                st.caption(caption)
 
 # ============================================================================
 # CONTACT PAGE
