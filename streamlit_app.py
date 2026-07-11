@@ -54,14 +54,21 @@ STRIP_COLORS = ["#2F7A4F", "#3B7FB5", "#D9822B", "#E8C93B"]
 CONTACT_PHONE = "+27 00 000 0000"
 CONTACT_EMAIL = "hello@careercompass.co.za"
 # Optional: paths/URLs to real screenshots of the app in action.
-SCREENSHOT_1 = "Screenshot 2026-06-11 163438.png"
-SCREENSHOT_2 = "Screenshot 2026-06-11 163447.png"
+SCREENSHOT_1 = None
+SCREENSHOT_2 = None
 
 st.markdown(f"""
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
     .cc-serif {{ font-family: 'Fraunces', serif; }}
     .cc-question {{ font-size: 0.95rem; color: #262730; margin-bottom: 0.2rem; }}
+    /* Backstop against dark mode: some browsers/OSes force a dark
+       Streamlit theme regardless of config.toml. Pin white/ink here too
+       so header text never disappears against a black background. */
+    .stApp, body, html {{
+        background-color: #FFFFFF !important;
+        color: {INK} !important;
+    }}
     /* Force full-width layout — Streamlit's "wide" mode still caps
        .block-container at a max-width by default. */
     .block-container {{
@@ -179,11 +186,11 @@ with h_mid:
     st.markdown('<div class="cc-header-title">The Career Compass Portal</div>', unsafe_allow_html=True)
 with h_right:
     st.markdown(
-        '<div class="cc-wordmark">'
+        '<div class="cc-wordmark" style="padding-right:1.2rem; margin-top:1.6rem;">'
         '<span style="color:#2F7A4F;">C</span><span style="color:#3B7FB5;">areer</span>'
         '<span style="color:#D9822B;">Com</span><span style="color:#E8C93B;">pass</span>'
         '</div>'
-        '<div class="cc-tagline">Navigate your future. Choose your path.</div>',
+        '<div class="cc-tagline" style="padding-right:1.2rem;">Navigate your future. Choose your path.</div>',
         unsafe_allow_html=True
     )
 
@@ -208,7 +215,6 @@ for shot_col, shot_path, caption in (
                     f'border-radius:10px; font-size:0.9rem;">📸 Add a screenshot here</div>',
                     unsafe_allow_html=True
                 )
-            st.caption(caption)
 
 st.write("")
 
