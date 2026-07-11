@@ -49,7 +49,7 @@ CONTACT_EMAIL = "hello@careercompass.co.za"
 # Optional: paths/URLs to real screenshots of the app in action.
 # Leave as None to show a placeholder card instead.
 SCREENSHOT_1 = "Screenshot 2026-06-11 163438.png"
-SCREENSHOT_2 = None
+SCREENSHOT_2 = "Screenshot 2026-06-11 163447.png"
 
 # Minimal CSS: only imports a font and styles elements we create ourselves
 # (safe — doesn't depend on Streamlit's internal DOM structure).
