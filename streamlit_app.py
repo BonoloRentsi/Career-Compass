@@ -48,7 +48,7 @@ CONTACT_PHONE = "+27 00 000 0000"
 CONTACT_EMAIL = "hello@careercompass.co.za"
 # Optional: paths/URLs to real screenshots of the app in action.
 # Leave as None to show a placeholder card instead.
-SCREENSHOT_1 = None
+SCREENSHOT_1 = "Screenshot 2026-06-11 163438.png"
 SCREENSHOT_2 = None
 
 # Minimal CSS: only imports a font and styles elements we create ourselves
