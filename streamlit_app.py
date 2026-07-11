@@ -28,7 +28,7 @@ from questionnaire import (RIASEC_ITEMS, BIG5_ITEMS, CONSTRAINT_QUESTIONS,
                             score_riasec, score_big5, all_riasec_questions, all_big5_questions)
 from recommender import generate_training_data, CareerRecommender, student_from_answers
 
-st.set_page_config(page_title="CareerCompass", page_icon="🧭", layout="centered")
+st.set_page_config(page_title="CareerCompass", page_icon="🧭", layout="wide")
 
 GREEN = "#1E8A5F"
 BLUE = "#0F4C81"
@@ -136,9 +136,9 @@ st.markdown(f'<div style="border-bottom:2px solid {LINE}; margin: -0.4rem 0 1.2r
 def rating_grid(questions, key_prefix):
     """Render questions as compact 1-5 number-input cards, two per row."""
     answers = {}
-    cols = st.columns(2)
+    cols = st.columns(3)
     for i, q in enumerate(questions):
-        with cols[i % 2]:
+        with cols[i % 3]:
             with st.container(border=True):
                 st.markdown(f'<div class="cc-question">{q}</div>', unsafe_allow_html=True)
                 answers[q] = st.number_input(
@@ -190,9 +190,9 @@ elif st.session_state.step == 2:
     st.caption("Enter your most recent percentage mark for each subject.")
     with st.form("step_marks"):
         marks = {}
-        cols = st.columns(2)
+        cols = st.columns(3)
         for i, subj in enumerate(sorted(ALL_SUBJECTS)):
-            with cols[i % 2]:
+            with cols[i % 3]:
                 marks[subj] = st.number_input(subj, 0, 100, 55, key=f"mark_{subj}")
         c1, c2 = st.columns([1, 3])
         back_clicked = c1.form_submit_button("← Back")
@@ -214,12 +214,15 @@ elif st.session_state.step == 3:
     with st.form("step_situation"):
         budget_opts = CONSTRAINT_QUESTIONS["budget_level"]["options"]
         duration_opts = CONSTRAINT_QUESTIONS["duration_pref"]["options"]
-        with st.container(border=True):
-            budget_level = st.radio(CONSTRAINT_QUESTIONS["budget_level"]["question"],
-                                     options=list(budget_opts.keys()), format_func=lambda k: budget_opts[k])
-        with st.container(border=True):
-            duration_pref = st.radio(CONSTRAINT_QUESTIONS["duration_pref"]["question"],
-                                      options=list(duration_opts.keys()), format_func=lambda k: duration_opts[k])
+        sit_col1, sit_col2 = st.columns(2)
+        with sit_col1:
+            with st.container(border=True):
+                budget_level = st.radio(CONSTRAINT_QUESTIONS["budget_level"]["question"],
+                                         options=list(budget_opts.keys()), format_func=lambda k: budget_opts[k])
+        with sit_col2:
+            with st.container(border=True):
+                duration_pref = st.radio(CONSTRAINT_QUESTIONS["duration_pref"]["question"],
+                                          options=list(duration_opts.keys()), format_func=lambda k: duration_opts[k])
         c1, c2 = st.columns([1, 3])
         back_clicked = c1.form_submit_button("← Back")
         next_clicked = c2.form_submit_button("See my results →", type="primary", use_container_width=True)
