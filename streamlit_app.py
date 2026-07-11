@@ -75,7 +75,7 @@ st.markdown(f"""
         max-width: 100% !important;
         padding-left: 2.5rem !important;
         padding-right: 2.5rem !important;
-        padding-top: 1.5rem !important;
+        padding-top: 2.2rem !important;
     }}
     .cc-badge {{
         display: inline-block; background: {PALE_BLUE}; color: {NAVY_DARK};
@@ -178,12 +178,17 @@ def rating_grid(questions, key_prefix):
 h_left, h_mid, h_right = st.columns([1, 2, 1])
 with h_left:
     st.markdown(
-        '<div style="font-size:2.2rem; line-height:1;">🎓</div>'
-        '<div class="cc-logo-caption"><b>Career<br>Compass</b><br>self-help tool</div>',
+        '<div style="margin-top:1.6rem;">'
+        '<div style="font-size:2.2rem; line-height:1;">🧭</div>'
+        '<div class="cc-logo-caption"><b>Career<br>Compass</b><br>self-help tool</div>'
+        '</div>',
         unsafe_allow_html=True
     )
 with h_mid:
-    st.markdown('<div class="cc-header-title">The Career Compass Portal</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="cc-header-title" style="margin-top:1.6rem;">The Career Compass Portal</div>',
+        unsafe_allow_html=True
+    )
 with h_right:
     st.markdown(
         '<div class="cc-wordmark" style="padding-right:1.2rem; margin-top:1.6rem;">'
