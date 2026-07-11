@@ -24,10 +24,6 @@ Notes on this version:
       ourselves (safe — doesn't depend on Streamlit's internal DOM).
     - Four "pages": Home, Assessment (the questionnaire wizard +
       results), and Contact. The site nav bar switches between them.
-    - Interface labels/headings/buttons are Title Cased. Long-form body
-      text (description copy, disclaimer, quotes, and data pulled from
-      careers_data/questionnaire/recommender) is left in normal sentence
-      case for readability.
     - Requires streamlit >= 1.28 (for st.container(border=True)).
 """
 import streamlit as st
@@ -61,6 +57,7 @@ CONTACT_EMAIL = "hello@careercompass.co.za"
 SCREENSHOT_1 = "Screenshot 2026-06-11 163438.png"
 SCREENSHOT_2 = "Screenshot 2026-06-11 163447.png"
 
+CONFUSION_IMAGE="Screenshot 2026-06-11 163348.png"
 
 st.markdown(f"""
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -173,7 +170,7 @@ def rating_grid(questions, key_prefix):
                     q, min_value=1, max_value=5, value=3, step=1,
                     key=f"{key_prefix}_{i}", label_visibility="collapsed"
                 )
-    st.caption("1 = Not At All · 5 = A Great Deal")
+    st.caption("1 = not at all · 5 = a great deal")
     return answers
 
 
@@ -185,7 +182,7 @@ with h_left:
     st.markdown(
         '<div style="margin-top:1.6rem;">'
         '<div style="font-size:2.2rem; line-height:1;">🧭</div>'
-        '<div class="cc-logo-caption"><b>Career<br>Compass</b><br>Self-Help Tool</div>'
+        '<div class="cc-logo-caption"><b>Career<br>Compass</b><br>self-help tool</div>'
         '</div>',
         unsafe_allow_html=True
     )
@@ -200,7 +197,7 @@ with h_right:
         '<span style="color:#2F7A4F;">C</span><span style="color:#3B7FB5;">areer</span>'
         '<span style="color:#D9822B;">Com</span><span style="color:#E8C93B;">pass</span>'
         '</div>'
-        '<div class="cc-tagline" style="padding-right:1.2rem;">Navigate Your Future. Choose Your Path.</div>',
+        '<div class="cc-tagline" style="padding-right:1.2rem;">Navigate your future. Choose your path.</div>',
         unsafe_allow_html=True
     )
 
@@ -211,8 +208,8 @@ st.write("")
 # ============================================================================
 shot_col1, shot_col2 = st.columns(2)
 for shot_col, shot_path, caption in (
-    (shot_col1, SCREENSHOT_1, "The Questionnaire"),
-    (shot_col2, SCREENSHOT_2, "Your Results"),
+    (shot_col1, SCREENSHOT_1, "The questionnaire"),
+    (shot_col2, SCREENSHOT_2, "Your results"),
 ):
     with shot_col:
         with st.container(border=True):
@@ -222,10 +219,9 @@ for shot_col, shot_path, caption in (
                 st.markdown(
                     f'<div style="height:160px; display:flex; align-items:center; '
                     f'justify-content:center; color:{INK_SOFT}; background:{PALE_BLUE}; '
-                    f'border-radius:10px; font-size:0.9rem;">📸 Add A Screenshot Here</div>',
+                    f'border-radius:10px; font-size:0.9rem;">📸 Add a screenshot here</div>',
                     unsafe_allow_html=True
                 )
-            st.caption(caption)
 
 st.write("")
 
@@ -238,9 +234,9 @@ for i, (col, label) in enumerate(zip(nav_cols, NAV_ITEMS)):
         target = ["home", "assessment", "results", "contact"][i]
         is_active = (st.session_state.page == target)
         btn_type = "primary" if is_active else "secondary"
-        if st.button(label, key=f"nav_{i}", type=btn_type, use_container_width=True):
+        if st.button(label.upper(), key=f"nav_{i}", type=btn_type, use_container_width=True):
             if target == "results" and not has_complete_answers():
-                st.session_state.flash = "Complete The Assessment First To See Your Results."
+                st.session_state.flash = "Complete the assessment first to see your results."
                 st.session_state.page = "assessment"
                 st.session_state.step = max(st.session_state.step, 0)
             elif target == "results":
@@ -269,11 +265,11 @@ if st.session_state.page == "home":
     st.markdown('<div class="cc-searchbar">', unsafe_allow_html=True)
     s1, s2, s3 = st.columns([1.2, 3, 0.6])
     with s1:
-        section_choice = st.selectbox("Jump To", ["Select A Section"] + STEPS, label_visibility="collapsed")
+        section_choice = st.selectbox("Jump to", ["Select a section"] + STEPS, label_visibility="collapsed")
     with s2:
-        st.text_input("Search", placeholder="Search Careers Or Subjects (Coming Soon)", label_visibility="collapsed")
+        st.text_input("Search", placeholder="Search careers or subjects (coming soon)", label_visibility="collapsed")
     with s3:
-        if st.button("🔍", use_container_width=True) and section_choice != "Select A Section":
+        if st.button("🔍", use_container_width=True) and section_choice != "Select a section":
             st.session_state.page = "assessment"
             st.session_state.step = STEPS.index(section_choice)
             st.session_state.max_reached = max(st.session_state.max_reached, STEPS.index(section_choice))
@@ -295,24 +291,24 @@ if st.session_state.page == "home":
     with hero_col:
         st.markdown(f"""
         <div class="cc-hero-panel">
-            <div class="cc-hero-ribbon">Welcome</div>
+            <div class="cc-hero-ribbon">WELCOME</div>
         </div>
         """, unsafe_allow_html=True)
     with action_col:
-        if st.button("🎯  Take The Assessment", key="act1", use_container_width=True):
+        if st.button("🎯  TAKE THE ASSESSMENT", key="act1", use_container_width=True):
             st.session_state.page = "assessment"
             st.session_state.step = 0
             st.rerun()
-        if st.button("📊  My Results", key="act2", use_container_width=True):
+        if st.button("📊  MY RESULTS", key="act2", use_container_width=True):
             if has_complete_answers():
                 st.session_state.page = "assessment"
                 st.session_state.step = 4
             else:
-                st.session_state.flash = "Complete The Assessment First To See Your Results."
+                st.session_state.flash = "Complete the assessment first to see your results."
                 st.session_state.page = "assessment"
                 st.session_state.step = max(st.session_state.step, 0)
             st.rerun()
-        if st.button("🧭  What We Offer", key="act3", use_container_width=True):
+        if st.button("🧭  WHAT WE OFFER", key="act3", use_container_width=True):
             st.session_state.page = "contact"
             st.rerun()
 
@@ -331,14 +327,14 @@ if st.session_state.page == "home":
         </svg>
         """, unsafe_allow_html=True)
     with conf_col2:
-        st.markdown('<h3 class="cc-serif">Feeling Unsure About Which Path To Take?</h3>', unsafe_allow_html=True)
+        st.markdown('<h3 class="cc-serif">Feeling unsure about which path to take?</h3>', unsafe_allow_html=True)
         st.write(
             "So many bright learners get stuck between subjects, marks, and a dozen well-meaning "
             "opinions. CareerCompass gives you one clear, personalised place to start."
         )
 
     st.write("")
-    st.markdown('<h3 class="cc-serif">Words To Carry With You</h3>', unsafe_allow_html=True)
+    st.markdown('<h3 class="cc-serif">Words to carry with you</h3>', unsafe_allow_html=True)
     quotes = [
         ("It always seems impossible until it's done.", "Nelson Mandela"),
         ("You have to dream before your dreams can come true.", "A.P.J. Abdul Kalam"),
@@ -359,7 +355,7 @@ if st.session_state.page == "home":
 # ============================================================================
 elif st.session_state.page == "contact":
     with st.container(border=True):
-        st.markdown('<h3 class="cc-serif">Contact Us</h3>', unsafe_allow_html=True)
+        st.markdown('<h3 class="cc-serif">Contact us</h3>', unsafe_allow_html=True)
         cc1, cc2 = st.columns(2)
         cc1.markdown(f"📞 **Phone**\n\n{CONTACT_PHONE}")
         cc2.markdown(f"✉️ **Email**\n\n{CONTACT_EMAIL}")
@@ -393,8 +389,8 @@ else:
 
     if st.session_state.step == 0:
         # ---- Step 0: Interests ----
-        st.markdown('<h3 class="cc-serif">1. Your Interests</h3>', unsafe_allow_html=True)
-        st.caption("How Much Do You Enjoy Each Kind Of Activity?")
+        st.markdown('<h3 class="cc-serif">1. Your interests</h3>', unsafe_allow_html=True)
+        st.caption("How much do you enjoy each kind of activity?")
         with st.form("step_interests"):
             riasec_answers = rating_grid(all_riasec_questions(), "riasec")
             next_clicked = st.form_submit_button("Continue →", type="primary", use_container_width=True)
@@ -405,8 +401,8 @@ else:
 
     elif st.session_state.step == 1:
         # ---- Step 1: Personality ----
-        st.markdown('<h3 class="cc-serif">2. Your Personality</h3>', unsafe_allow_html=True)
-        st.caption("Rate How Well Each Statement Describes You.")
+        st.markdown('<h3 class="cc-serif">2. Your personality</h3>', unsafe_allow_html=True)
+        st.caption("Rate how well each statement describes you.")
         with st.form("step_personality"):
             big5_answers = rating_grid(all_big5_questions(), "big5")
             c1, c2 = st.columns([1, 3])
@@ -422,8 +418,8 @@ else:
 
     elif st.session_state.step == 2:
         # ---- Step 2: Marks ----
-        st.markdown('<h3 class="cc-serif">3. Your Academic Marks (%)</h3>', unsafe_allow_html=True)
-        st.caption("Enter Your Most Recent Percentage Mark For Each Subject.")
+        st.markdown('<h3 class="cc-serif">3. Your academic marks (%)</h3>', unsafe_allow_html=True)
+        st.caption("Enter your most recent percentage mark for each subject.")
         with st.form("step_marks"):
             marks = {}
             cols = st.columns(3)
@@ -443,8 +439,8 @@ else:
 
     elif st.session_state.step == 3:
         # ---- Step 3: Situation ----
-        st.markdown('<h3 class="cc-serif">4. Your Practical Situation</h3>', unsafe_allow_html=True)
-        st.caption("This Helps Us Recommend Paths That Are Realistic For You.")
+        st.markdown('<h3 class="cc-serif">4. Your practical situation</h3>', unsafe_allow_html=True)
+        st.caption("This helps us recommend paths that are realistic for you.")
         with st.form("step_situation"):
             budget_opts = CONSTRAINT_QUESTIONS["budget_level"]["options"]
             duration_opts = CONSTRAINT_QUESTIONS["duration_pref"]["options"]
@@ -459,7 +455,7 @@ else:
                                               options=list(duration_opts.keys()), format_func=lambda k: duration_opts[k])
             c1, c2 = st.columns([1, 3])
             back_clicked = c1.form_submit_button("← Back")
-            next_clicked = c2.form_submit_button("See My Results →", type="primary", use_container_width=True)
+            next_clicked = c2.form_submit_button("See my results →", type="primary", use_container_width=True)
         if back_clicked:
             goto(2)
             st.rerun()
@@ -472,8 +468,8 @@ else:
     else:
         # ---- Step 4: Results ----
         if not has_complete_answers():
-            st.warning("Complete The Assessment First To See Your Results.")
-            if st.button("Start The Assessment"):
+            st.warning("Complete the assessment first to see your results.")
+            if st.button("Start the assessment"):
                 st.session_state.step = 0
                 st.rerun()
         else:
@@ -485,8 +481,8 @@ else:
                                             a["budget_level"], a["duration_pref"])
             results = recommender.recommend(student, top_n=5)
 
-            st.markdown('<h3 class="cc-serif">🎯 Your Top Career Matches</h3>', unsafe_allow_html=True)
-            st.caption("Ranked By Overall Fit Across Your Interests, Personality, Marks, And Circumstances.")
+            st.markdown('<h3 class="cc-serif">🎯 Your top career matches</h3>', unsafe_allow_html=True)
+            st.caption("Ranked by overall fit across your interests, personality, marks, and circumstances.")
 
             for i, r in enumerate(results, 1):
                 c = r["career_obj"]
@@ -500,21 +496,21 @@ else:
                         st.metric("Match", f"{pct:.0f}%", label_visibility="collapsed")
                     st.progress(min(max(r["final_score"], 0.0), 1.0))
 
-                    with st.expander("Why This Fits, And What's Next", expanded=(i == 1)):
+                    with st.expander("Why this fits, and what's next", expanded=(i == 1)):
                         st.write(r["explanation"])
-                        st.markdown(f"**What It Involves:** {c['description']}")
+                        st.markdown(f"**What it involves:** {c['description']}")
                         st.markdown(
                             f'<span class="cc-badge">{c["sector"]} · {c["seta"]}</span>'
                             f'<span class="cc-badge">{c["duration_years"]} years study</span>'
                             f'<span class="cc-badge">R{c["salary_entry"]:,}/yr entry</span>',
                             unsafe_allow_html=True
                         )
-                        st.markdown("**Next Steps:**")
+                        st.markdown("**Next steps:**")
                         for step in c["next_steps"]:
                             st.markdown(f"- {step}")
 
             st.write("")
-            if st.button("↺ Start Over"):
+            if st.button("↺ Start over"):
                 st.session_state.step = 0
                 st.session_state.answers = {}
                 st.session_state.max_reached = 0
