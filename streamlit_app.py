@@ -15,17 +15,16 @@ Deploy for free:
     (Streamlit Community Cloud) or as a Hugging Face Space (Streamlit SDK).
 
 Notes on this version:
+    - Layout is modelled on the National Career Advice Portal
+      (ncap.careerhelp.org.za): a white header lockup, a green site nav
+      bar with a multicolour underline strip, a search/category strip,
+      and a hero banner paired with stacked action blocks.
     - Colors/font come from .streamlit/config.toml (Streamlit's native
-      theming system) rather than injected CSS targeting internal
-      Streamlit classes, which breaks across Streamlit versions.
-    - There are two "pages": a Home landing page (about the tool, sample
-      screenshots, quotes, contact info, disclaimer) and the App itself
-      (the questionnaire wizard + results). A ☰ Menu popover switches
-      between them.
-    - The questionnaire is a short multi-step wizard instead of one long
-      scrolling form, so no single screen has more than ~10 questions.
-    - Requires streamlit >= 1.28 (for st.container(border=True) and
-      st.popover).
+      theming system) plus a small block of CSS for elements we create
+      ourselves (safe — doesn't depend on Streamlit's internal DOM).
+    - Four "pages": Home, Assessment (the questionnaire wizard +
+      results), and Contact. The site nav bar switches between them.
+    - Requires streamlit >= 1.28 (for st.container(border=True)).
 """
 import streamlit as st
 from careers_data import ALL_SUBJECTS
@@ -35,53 +34,75 @@ from recommender import generate_training_data, CareerRecommender, student_from_
 
 st.set_page_config(page_title="CareerCompass", page_icon="🧭", layout="wide")
 
-GREEN = "#1E8A5F"
-BLUE = "#0F4C81"
-BLUE_DEEP = "#0A3A63"
+# ------------------------------------------------------------------------
+# Palette — modelled on the reference site: green nav, navy action blocks,
+# peach search strip, teal "welcome" ribbon, multicolour underline strip.
+# ------------------------------------------------------------------------
+NAV_GREEN = "#2F7A4F"
+NAV_GRAY_BG = "#EFEFEF"
+NAV_TEXT = "#4A4A4A"
+NAVY_DARK = "#26344A"
+PEACH_BG = "#F4E8DA"
+TEAL = "#4FB8AE"
+INK = "#242423"
 INK_SOFT = "#5A6B78"
-LINE = "#DDE6EA"
-CARD_BG = "#FFFFFF"
+LINE = "#DDE0E3"
 PALE_BLUE = "#EAF2F8"
+STRIP_COLORS = ["#2F7A4F", "#3B7FB5", "#D9822B", "#E8C93B"]
 
 # Fill these in with your real details before deploying.
 CONTACT_PHONE = "+27 00 000 0000"
 CONTACT_EMAIL = "hello@careercompass.co.za"
 # Optional: paths/URLs to real screenshots of the app in action.
-# Leave as None to show a placeholder card instead.
-SCREENSHOT_1 = "Screenshot 2026-06-11 163438.png"
-SCREENSHOT_2 = "Screenshot 2026-06-11 163447.png"
+SCREENSHOT_1 = None
+SCREENSHOT_2 = None
 
-# Minimal CSS: only imports a font and styles elements we create ourselves
-# (safe — doesn't depend on Streamlit's internal DOM structure).
 st.markdown(f"""
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
     .cc-serif {{ font-family: 'Fraunces', serif; }}
-    .cc-hero {{
-        background: linear-gradient(135deg, {BLUE} 0%, {BLUE_DEEP} 100%);
-        border-radius: 16px;
-        padding: 2.2rem 2rem;
-        color: #FFFFFF;
-        margin-bottom: 1.6rem;
-    }}
-    .cc-hero h1 {{
-        font-family: 'Fraunces', serif;
-        font-size: 2rem;
-        font-weight: 700;
-        margin: 0 0 0.3rem 0;
-        color: #FFFFFF;
-    }}
-    .cc-hero p {{ margin: 0; color: #DCE7EE; font-size: 1rem; max-width: 34rem; }}
-    .cc-eyebrow {{
-        text-transform: uppercase; letter-spacing: 0.13em; font-size: 0.7rem;
-        font-weight: 600; color: {GREEN}; margin-bottom: 0.5rem;
-    }}
+    .cc-question {{ font-size: 0.95rem; color: #262730; margin-bottom: 0.2rem; }}
     .cc-badge {{
-        display: inline-block; background: {PALE_BLUE}; color: {BLUE_DEEP};
+        display: inline-block; background: {PALE_BLUE}; color: {NAVY_DARK};
         border-radius: 999px; padding: 0.2rem 0.75rem; font-size: 0.82rem;
         font-weight: 600; margin: 0.15rem 0.35rem 0.15rem 0;
     }}
-    .cc-question {{ font-size: 0.95rem; color: #262730; margin-bottom: 0.2rem; }}
+    /* Header lockup */
+    .cc-header-title {{
+        text-align: center; text-transform: uppercase; letter-spacing: 0.04em;
+        font-weight: 700; font-size: 1.15rem; color: {INK}; padding-top: 0.6rem;
+    }}
+    .cc-wordmark span {{ font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.5rem; }}
+    .cc-wordmark {{ text-align: right; }}
+    .cc-tagline {{ text-align: right; font-size: 0.72rem; color: {INK_SOFT}; margin-top: -0.2rem; }}
+    .cc-logo-caption {{ font-size: 0.72rem; color: {INK_SOFT}; line-height: 1.15; }}
+    /* Multicolour underline strip below the nav bar */
+    .cc-strip {{ display: flex; height: 5px; margin-bottom: 1.3rem; }}
+    .cc-strip div {{ flex: 1; }}
+    /* Search / category strip */
+    .cc-searchbar {{
+        background: {PEACH_BG}; border-radius: 10px; padding: 0.9rem 1.1rem;
+        margin-bottom: 1.2rem;
+    }}
+    /* Hero welcome ribbon */
+    .cc-hero-panel {{
+        background: linear-gradient(135deg, {NAV_GREEN} 0%, {NAVY_DARK} 100%);
+        border-radius: 12px; position: relative; height: 260px;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden;
+    }}
+    .cc-hero-ribbon {{
+        background: {TEAL}; color: #FFFFFF; font-weight: 700; font-size: 1.4rem;
+        letter-spacing: 0.08em; padding: 0.9rem 3rem; text-align: center;
+        transform: rotate(-2deg); box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    }}
+    /* Stacked navy action blocks */
+    .cc-action-block {{
+        background: {NAVY_DARK}; color: #FFFFFF; border-radius: 8px;
+        padding: 0.95rem 1.1rem; margin-bottom: 0.65rem; text-align: center;
+        font-weight: 600; letter-spacing: 0.04em; font-size: 0.92rem;
+        border-bottom: 3px solid {TEAL};
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -94,7 +115,8 @@ def load_recommender():
     return rec
 
 
-STEPS = ["Interests", "Personality", "Marks", "Situation", "Results"]
+STEPS = ["Interests", "Personality", "Marks", "Situation"]
+NAV_ITEMS = ["Home", "Assessment", "Results", "Contact Us"]
 
 if "page" not in st.session_state:
     st.session_state.page = "home"
@@ -104,6 +126,8 @@ if "answers" not in st.session_state:
     st.session_state.answers = {}
 if "max_reached" not in st.session_state:
     st.session_state.max_reached = 0
+if "flash" not in st.session_state:
+    st.session_state.flash = None
 
 
 def goto(i):
@@ -111,25 +135,10 @@ def goto(i):
     st.session_state.max_reached = max(st.session_state.max_reached, i)
 
 
-def start_assessment():
-    st.session_state.page = "app"
-    st.session_state.step = 0
-    st.session_state.max_reached = 0
-
-
-def go_home():
-    st.session_state.page = "home"
-
-
-def hero():
-    st.markdown("""
-    <div class="cc-hero">
-        <div class="cc-eyebrow">Career guidance, personalised</div>
-        <h1>🧭 CareerCompass</h1>
-        <p>Answer a few honest questions about your interests, personality, marks, and
-        circumstances — we'll match you to career paths that genuinely fit, and explain why.</p>
-    </div>
-    """, unsafe_allow_html=True)
+def has_complete_answers():
+    a = st.session_state.answers
+    required = {"riasec", "big5", "marks", "budget_level", "duration_pref"}
+    return required.issubset(a.keys())
 
 
 def rating_grid(questions, key_prefix):
@@ -148,56 +157,116 @@ def rating_grid(questions, key_prefix):
     return answers
 
 
-# ----------------------------------------------------------------------------
-# Menu — simple popover nav, matches the "hamburger" in the wireframe
-# ----------------------------------------------------------------------------
-menu_l, menu_r = st.columns([6, 1])
-with menu_r:
-    with st.popover("☰ Menu", use_container_width=True):
-        if st.button("🏠 Home", use_container_width=True):
-            go_home()
+# ============================================================================
+# HEADER — logo lockup left, page title centre, wordmark + tagline right
+# ============================================================================
+h_left, h_mid, h_right = st.columns([1, 2, 1])
+with h_left:
+    st.markdown(
+        '<div style="font-size:2.2rem; line-height:1;">🎓</div>'
+        '<div class="cc-logo-caption"><b>Career<br>Compass</b><br>self-help tool</div>',
+        unsafe_allow_html=True
+    )
+with h_mid:
+    st.markdown('<div class="cc-header-title">The Career Compass Portal</div>', unsafe_allow_html=True)
+with h_right:
+    st.markdown(
+        '<div class="cc-wordmark">'
+        '<span style="color:#2F7A4F;">C</span><span style="color:#3B7FB5;">areer</span>'
+        '<span style="color:#D9822B;">Com</span><span style="color:#E8C93B;">pass</span>'
+        '</div>'
+        '<div class="cc-tagline">Navigate your future. Choose your path.</div>',
+        unsafe_allow_html=True
+    )
+
+st.write("")
+
+# ============================================================================
+# SITE NAV BAR — green active tab, gray inactive, multicolour underline
+# ============================================================================
+nav_cols = st.columns(len(NAV_ITEMS))
+for i, (col, label) in enumerate(zip(nav_cols, NAV_ITEMS)):
+    with col:
+        target = ["home", "assessment", "results", "contact"][i]
+        is_active = (st.session_state.page == target)
+        btn_type = "primary" if is_active else "secondary"
+        if st.button(label.upper(), key=f"nav_{i}", type=btn_type, use_container_width=True):
+            if target == "results" and not has_complete_answers():
+                st.session_state.flash = "Complete the assessment first to see your results."
+                st.session_state.page = "assessment"
+                st.session_state.step = max(st.session_state.step, 0)
+            elif target == "results":
+                st.session_state.page = "assessment"
+                st.session_state.step = 4
+            elif target == "assessment":
+                st.session_state.page = "assessment"
+            else:
+                st.session_state.page = target
             st.rerun()
-        if st.button("🚀 Start assessment", use_container_width=True):
-            start_assessment()
-            st.rerun()
+
+st.markdown(
+    f'<div class="cc-strip">{"".join(f"<div style=\'background:{c};\'></div>" for c in STRIP_COLORS)}</div>',
+    unsafe_allow_html=True
+)
+
+if st.session_state.flash:
+    st.warning(st.session_state.flash)
+    st.session_state.flash = None
 
 # ============================================================================
 # HOME PAGE
 # ============================================================================
 if st.session_state.page == "home":
-    hero()
+    # ---- Category / search strip ----
+    st.markdown('<div class="cc-searchbar">', unsafe_allow_html=True)
+    s1, s2, s3 = st.columns([1.2, 3, 0.6])
+    with s1:
+        section_choice = st.selectbox("Jump to", ["Select a section"] + STEPS, label_visibility="collapsed")
+    with s2:
+        st.text_input("Search", placeholder="Search careers or subjects (coming soon)", label_visibility="collapsed")
+    with s3:
+        if st.button("🔍", use_container_width=True) and section_choice != "Select a section":
+            st.session_state.page = "assessment"
+            st.session_state.step = STEPS.index(section_choice)
+            st.session_state.max_reached = max(st.session_state.max_reached, STEPS.index(section_choice))
+            st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.button("🚀 Start your journey", type="primary", use_container_width=True,
-              on_click=start_assessment)
+    # ---- Description line ----
+    st.markdown(
+        f'<p style="text-align:center; color:{INK_SOFT}; max-width:50rem; margin:0 auto 1.4rem auto;">'
+        'CareerCompass is an online self-help tool designed to facilitate informed career and '
+        'study decisions. It looks at your interests, personality, academic results, and '
+        'real-world circumstances, then explains why each recommendation makes sense for you.'
+        '</p>',
+        unsafe_allow_html=True
+    )
 
-    st.write("")
-    shot_col1, shot_col2 = st.columns(2)
-    for shot_col, shot_path, caption in (
-        (shot_col1, SCREENSHOT_1, "The questionnaire"),
-        (shot_col2, SCREENSHOT_2, "Your results"),
-    ):
-        with shot_col:
-            with st.container(border=True):
-                if shot_path:
-                    st.image(shot_path, use_container_width=True)
-                else:
-                    st.markdown(
-                        f'<div style="height:180px; display:flex; align-items:center; '
-                        f'justify-content:center; color:{INK_SOFT}; background:{PALE_BLUE}; '
-                        f'border-radius:10px; font-size:0.9rem;">📸 Add a screenshot here</div>',
-                        unsafe_allow_html=True
-                    )
-                st.caption(caption)
-
-    st.write("")
-    with st.container(border=True):
-        st.markdown('<h3 class="cc-serif">What is CareerCompass?</h3>', unsafe_allow_html=True)
-        st.write(
-            "CareerCompass is a self-help tool that helps you explore career paths that fit "
-            "who you are — not just your marks. It looks at your interests, your personality, "
-            "your academic results, and your real-world circumstances (budget and time), then "
-            "explains why each recommendation makes sense for you."
-        )
+    # ---- Hero banner + stacked action blocks ----
+    hero_col, action_col = st.columns([2.3, 1])
+    with hero_col:
+        st.markdown(f"""
+        <div class="cc-hero-panel">
+            <div class="cc-hero-ribbon">WELCOME</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with action_col:
+        if st.button("🎯  TAKE THE ASSESSMENT", key="act1", use_container_width=True):
+            st.session_state.page = "assessment"
+            st.session_state.step = 0
+            st.rerun()
+        if st.button("📊  MY RESULTS", key="act2", use_container_width=True):
+            if has_complete_answers():
+                st.session_state.page = "assessment"
+                st.session_state.step = 4
+            else:
+                st.session_state.flash = "Complete the assessment first to see your results."
+                st.session_state.page = "assessment"
+                st.session_state.step = max(st.session_state.step, 0)
+            st.rerun()
+        if st.button("🧭  WHAT WE OFFER", key="act3", use_container_width=True):
+            st.session_state.page = "contact"
+            st.rerun()
 
     st.write("")
     conf_col1, conf_col2 = st.columns([1, 2])
@@ -205,12 +274,12 @@ if st.session_state.page == "home":
         st.markdown(f"""
         <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
             <circle cx="110" cy="95" r="55" fill="{PALE_BLUE}"/>
-            <circle cx="110" cy="80" r="30" fill="{BLUE}"/>
-            <rect x="80" y="108" width="60" height="55" rx="20" fill="{BLUE}"/>
-            <text x="45" y="55" font-size="30" fill="{GREEN}" font-family="Fraunces, serif">?</text>
-            <text x="150" y="45" font-size="24" fill="{BLUE_DEEP}" font-family="Fraunces, serif">?</text>
-            <text x="35" y="130" font-size="22" fill="{BLUE_DEEP}" font-family="Fraunces, serif">?</text>
-            <text x="165" y="140" font-size="28" fill="{GREEN}" font-family="Fraunces, serif">?</text>
+            <circle cx="110" cy="80" r="30" fill="{NAV_GREEN}"/>
+            <rect x="80" y="108" width="60" height="55" rx="20" fill="{NAV_GREEN}"/>
+            <text x="45" y="55" font-size="30" fill="{TEAL}" font-family="Fraunces, serif">?</text>
+            <text x="150" y="45" font-size="24" fill="{NAVY_DARK}" font-family="Fraunces, serif">?</text>
+            <text x="35" y="130" font-size="22" fill="{NAVY_DARK}" font-family="Fraunces, serif">?</text>
+            <text x="165" y="140" font-size="28" fill="{TEAL}" font-family="Fraunces, serif">?</text>
         </svg>
         """, unsafe_allow_html=True)
     with conf_col2:
@@ -234,10 +303,32 @@ if st.session_state.page == "home":
             with st.container(border=True):
                 st.markdown(f'<div style="font-size:0.9rem; font-style:italic; color:{INK_SOFT};">"{quote}"</div>',
                             unsafe_allow_html=True)
-                st.markdown(f'<div style="font-size:0.82rem; font-weight:600; color:{BLUE_DEEP}; margin-top:0.5rem;">'
+                st.markdown(f'<div style="font-size:0.82rem; font-weight:600; color:{NAVY_DARK}; margin-top:0.5rem;">'
                             f'— {author}</div>', unsafe_allow_html=True)
 
     st.write("")
+    shot_col1, shot_col2 = st.columns(2)
+    for shot_col, shot_path, caption in (
+        (shot_col1, SCREENSHOT_1, "The questionnaire"),
+        (shot_col2, SCREENSHOT_2, "Your results"),
+    ):
+        with shot_col:
+            with st.container(border=True):
+                if shot_path:
+                    st.image(shot_path, use_container_width=True)
+                else:
+                    st.markdown(
+                        f'<div style="height:160px; display:flex; align-items:center; '
+                        f'justify-content:center; color:{INK_SOFT}; background:{PALE_BLUE}; '
+                        f'border-radius:10px; font-size:0.9rem;">📸 Add a screenshot here</div>',
+                        unsafe_allow_html=True
+                    )
+                st.caption(caption)
+
+# ============================================================================
+# CONTACT PAGE
+# ============================================================================
+elif st.session_state.page == "contact":
     with st.container(border=True):
         st.markdown('<h3 class="cc-serif">Contact us</h3>', unsafe_allow_html=True)
         cc1, cc2 = st.columns(2)
@@ -252,14 +343,13 @@ if st.session_state.page == "home":
     )
 
 # ============================================================================
-# QUESTIONNAIRE / RESULTS APP
+# ASSESSMENT PAGE — questionnaire wizard + results
 # ============================================================================
 else:
-    hero()
-
-    # Top tab bar — click a completed step to jump back to it.
-    tab_cols = st.columns(len(STEPS))
-    for i, (col, name) in enumerate(zip(tab_cols, STEPS)):
+    # ---- Step tab bar (Interests / Personality / Marks / Situation / Results) ----
+    all_labels = STEPS + ["Results"]
+    tab_cols = st.columns(len(all_labels))
+    for i, (col, name) in enumerate(zip(tab_cols, all_labels)):
         with col:
             is_active = (i == st.session_state.step)
             is_unlocked = (i <= st.session_state.max_reached)
@@ -352,45 +442,51 @@ else:
 
     else:
         # ---- Step 4: Results ----
-        recommender = load_recommender()
-        a = st.session_state.answers
-        riasec_scores = score_riasec(a["riasec"])
-        big5_scores = score_big5(a["big5"])
-        student = student_from_answers(a["marks"], riasec_scores, big5_scores,
-                                        a["budget_level"], a["duration_pref"])
-        results = recommender.recommend(student, top_n=5)
+        if not has_complete_answers():
+            st.warning("Complete the assessment first to see your results.")
+            if st.button("Start the assessment"):
+                st.session_state.step = 0
+                st.rerun()
+        else:
+            recommender = load_recommender()
+            a = st.session_state.answers
+            riasec_scores = score_riasec(a["riasec"])
+            big5_scores = score_big5(a["big5"])
+            student = student_from_answers(a["marks"], riasec_scores, big5_scores,
+                                            a["budget_level"], a["duration_pref"])
+            results = recommender.recommend(student, top_n=5)
 
-        st.markdown('<h3 class="cc-serif">🎯 Your top career matches</h3>', unsafe_allow_html=True)
-        st.caption("Ranked by overall fit across your interests, personality, marks, and circumstances.")
+            st.markdown('<h3 class="cc-serif">🎯 Your top career matches</h3>', unsafe_allow_html=True)
+            st.caption("Ranked by overall fit across your interests, personality, marks, and circumstances.")
 
-        for i, r in enumerate(results, 1):
-            c = r["career_obj"]
-            pct = r["final_score"] * 100
-            with st.container(border=True):
-                col_title, col_score = st.columns([3, 1])
-                with col_title:
-                    st.markdown(f'<div class="cc-serif" style="font-size:1.15rem; font-weight:700; color:{BLUE_DEEP};">'
-                                f'{i}. {r["career"]}</div>', unsafe_allow_html=True)
-                with col_score:
-                    st.metric("Match", f"{pct:.0f}%", label_visibility="collapsed")
-                st.progress(min(max(r["final_score"], 0.0), 1.0))
+            for i, r in enumerate(results, 1):
+                c = r["career_obj"]
+                pct = r["final_score"] * 100
+                with st.container(border=True):
+                    col_title, col_score = st.columns([3, 1])
+                    with col_title:
+                        st.markdown(f'<div class="cc-serif" style="font-size:1.15rem; font-weight:700; color:{NAVY_DARK};">'
+                                    f'{i}. {r["career"]}</div>', unsafe_allow_html=True)
+                    with col_score:
+                        st.metric("Match", f"{pct:.0f}%", label_visibility="collapsed")
+                    st.progress(min(max(r["final_score"], 0.0), 1.0))
 
-                with st.expander("Why this fits, and what's next", expanded=(i == 1)):
-                    st.write(r["explanation"])
-                    st.markdown(f"**What it involves:** {c['description']}")
-                    st.markdown(
-                        f'<span class="cc-badge">{c["sector"]} · {c["seta"]}</span>'
-                        f'<span class="cc-badge">{c["duration_years"]} years study</span>'
-                        f'<span class="cc-badge">R{c["salary_entry"]:,}/yr entry</span>',
-                        unsafe_allow_html=True
-                    )
-                    st.markdown("**Next steps:**")
-                    for step in c["next_steps"]:
-                        st.markdown(f"- {step}")
+                    with st.expander("Why this fits, and what's next", expanded=(i == 1)):
+                        st.write(r["explanation"])
+                        st.markdown(f"**What it involves:** {c['description']}")
+                        st.markdown(
+                            f'<span class="cc-badge">{c["sector"]} · {c["seta"]}</span>'
+                            f'<span class="cc-badge">{c["duration_years"]} years study</span>'
+                            f'<span class="cc-badge">R{c["salary_entry"]:,}/yr entry</span>',
+                            unsafe_allow_html=True
+                        )
+                        st.markdown("**Next steps:**")
+                        for step in c["next_steps"]:
+                            st.markdown(f"- {step}")
 
-        st.write("")
-        if st.button("↺ Start over"):
-            st.session_state.step = 0
-            st.session_state.answers = {}
-            st.session_state.max_reached = 0
-            st.rerun()
+            st.write("")
+            if st.button("↺ Start over"):
+                st.session_state.step = 0
+                st.session_state.answers = {}
+                st.session_state.max_reached = 0
+                st.rerun()
