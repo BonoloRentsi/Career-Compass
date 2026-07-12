@@ -336,8 +336,8 @@ if st.session_state.page == "home":
     st.write("")
     st.markdown('<h3 class="cc-serif">Words to carry with you</h3>', unsafe_allow_html=True)
     quotes = [
-        ("It always seems impossible until it's done.", "Nelson Mandela"),
-        ("You have to dream before your dreams can come true.", "A.P.J. Abdul Kalam"),
+        ("It Always Seems Impossible Until It's Done.", "NELSON MANDELA"),
+        ("The Purpose Of Education Is To Make Good Human Beings With Skill And Expertise. Enlightened Human Beings Can Be Created By Teachers."", "A.P.J. Abdul Kalam"),
         ("Education is the passport to the future.", "Malcolm X"),
         ("Life is like riding a bicycle. To keep your balance, you must keep moving.", "Albert Einstein"),
     ]
