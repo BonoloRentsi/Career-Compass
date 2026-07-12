@@ -279,9 +279,9 @@ if st.session_state.page == "home":
     # ---- Description line ----
     st.markdown(
         f'<p style="text-align:center; color:{INK_SOFT}; max-width:50rem; margin:0 auto 1.4rem auto;">'
-        'CareerCompass is an online self-help tool designed to facilitate informed career and '
-        'study decisions. It looks at your interests, personality, academic results, and '
-        'real-world circumstances, then explains why each recommendation makes sense for you.'
+        'CAREERCOMPASS IS AN ONLINE SELF-HELP TOOL DESIGNED TO FACILITATE INFORMED CAREER AND '
+        'STUDY DECISIONS. IT LOOKS AT YOUR INTERESTS, PERSONALITY, ACADEMIC RESULTS, AND '
+        'REAL-WORLD CIRCUMSTANCES, THEN EXPLAINS WHY EACH RECOMMENDATION MAKES SENSE FOR YOU.'
         '</p>',
         unsafe_allow_html=True
     )
