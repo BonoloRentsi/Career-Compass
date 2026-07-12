@@ -315,17 +315,20 @@ if st.session_state.page == "home":
     st.write("")
     conf_col1, conf_col2 = st.columns([1, 2])
     with conf_col1:
-        st.markdown(f"""
-        <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="110" cy="95" r="55" fill="{PALE_BLUE}"/>
-            <circle cx="110" cy="80" r="30" fill="{NAV_GREEN}"/>
-            <rect x="80" y="108" width="60" height="55" rx="20" fill="{NAV_GREEN}"/>
-            <text x="45" y="55" font-size="30" fill="{TEAL}" font-family="Fraunces, serif">?</text>
-            <text x="150" y="45" font-size="24" fill="{NAVY_DARK}" font-family="Fraunces, serif">?</text>
-            <text x="35" y="130" font-size="22" fill="{NAVY_DARK}" font-family="Fraunces, serif">?</text>
-            <text x="165" y="140" font-size="28" fill="{TEAL}" font-family="Fraunces, serif">?</text>
-        </svg>
-        """, unsafe_allow_html=True)
+        if CONFUSION_IMAGE:
+            st.image(CONFUSION_IMAGE, use_container_width=True)
+        else:
+            st.markdown(f"""
+            <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="110" cy="95" r="55" fill="{PALE_BLUE}"/>
+                <circle cx="110" cy="80" r="30" fill="{NAV_GREEN}"/>
+                <rect x="80" y="108" width="60" height="55" rx="20" fill="{NAV_GREEN}"/>
+                <text x="45" y="55" font-size="30" fill="{TEAL}" font-family="Fraunces, serif">?</text>
+                <text x="150" y="45" font-size="24" fill="{NAVY_DARK}" font-family="Fraunces, serif">?</text>
+                <text x="35" y="130" font-size="22" fill="{NAVY_DARK}" font-family="Fraunces, serif">?</text>
+                <text x="165" y="140" font-size="28" fill="{TEAL}" font-family="Fraunces, serif">?</text>
+            </svg>
+            """, unsafe_allow_html=True)
     with conf_col2:
         st.markdown('<h3 class="cc-serif">FEELING UNSURE ABOUT WHICH PATH TO TAKE?</h3>', unsafe_allow_html=True)
         st.write(
