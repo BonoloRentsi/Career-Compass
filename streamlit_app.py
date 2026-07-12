@@ -315,6 +315,13 @@ if st.session_state.page == "home":
     st.write("")
     conf_col1, conf_col2 = st.columns([1, 2])
     with conf_col1:
+        st.markdown('<h3 class="cc-serif">FEELING UNSURE ABOUT WHICH PATH TO TAKE?</h3>', unsafe_allow_html=True)
+        st.write(
+            "SO MANY BRIGHT LEARNERS GET STUCK BETWEEN SUBJECTS, MARKS, AND A DOZEN WELL-MEANING "
+            "OPINIONS. CAREERCOMPASS GIVES YOU ONE CLEAR, PERSONALISED PLACE TO START."
+        )
+
+    with conf_col2:
         if CONFUSION_IMAGE:
             st.image(CONFUSION_IMAGE, use_container_width=True)
         else:
@@ -329,12 +336,6 @@ if st.session_state.page == "home":
                 <text x="165" y="140" font-size="28" fill="{TEAL}" font-family="Fraunces, serif">?</text>
             </svg>
             """, unsafe_allow_html=True)
-    with conf_col2:
-        st.markdown('<h3 class="cc-serif">FEELING UNSURE ABOUT WHICH PATH TO TAKE?</h3>', unsafe_allow_html=True)
-        st.write(
-            "SO MANY BRIGHT LEARNERS GET STUCK BETWEEN SUBJECTS, MARKS, AND A DOZEN WELL-MEANING "
-            "OPINIONS. CAREERCOMPASS GIVES YOU ONE CLEAR, PERSONALISED PLACE TO START."
-        )
 
     st.write("")
     st.markdown('<h3 class="cc-serif">WORDS TO CARRY WITH YOU</h3>', unsafe_allow_html=True)
