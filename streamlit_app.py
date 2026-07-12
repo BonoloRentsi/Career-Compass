@@ -338,8 +338,8 @@ if st.session_state.page == "home":
     quotes = [
         ("It Always Seems Impossible Until It's Done.", "NELSON MANDELA"),
         ("The Purpose Of Education Is To Make Good Human Beings With Skill And Expertise. Enlightened Human Beings Can Be Created By Teachers.", "A.P.J. Abdul Kalam"),
-        ("Education is the passport to the future.", "Malcolm X"),
-        ("Life is like riding a bicycle. To keep your balance, you must keep moving.", "Albert Einstein"),
+        ("Education Is Our Passport To The Future, For Tomorrow Belongs To The People Who Prepare For It Today.", "Malcolm X"),
+        ("Education Is Not The Learning Of Facts, But The Training Of The Mind To Think.", "Albert Einstein"),
     ]
     q_cols = st.columns(4)
     for q_col, (quote, author) in zip(q_cols, quotes):
