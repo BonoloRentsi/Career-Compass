@@ -394,11 +394,11 @@ else:
 
     if st.session_state.step == 0:
         # ---- Step 0: Interests ----
-        st.markdown('<h3 class="cc-serif">1. Your interests</h3>', unsafe_allow_html=True)
-        st.caption("How much do you enjoy each kind of activity?")
+        st.markdown('<h3 class="cc-serif">1. YOUR INTERESTS</h3>', unsafe_allow_html=True)
+        st.caption("HOW MUCH DO YOU ENJOY EACH KIND OF ACTIVITY?")
         with st.form("step_interests"):
             riasec_answers = rating_grid(all_riasec_questions(), "riasec")
-            next_clicked = st.form_submit_button("Continue →", type="primary", use_container_width=True)
+            next_clicked = st.form_submit_button("CONTINUE →", type="primary", use_container_width=True)
         if next_clicked:
             st.session_state.answers["riasec"] = riasec_answers
             goto(1)
@@ -406,13 +406,13 @@ else:
 
     elif st.session_state.step == 1:
         # ---- Step 1: Personality ----
-        st.markdown('<h3 class="cc-serif">2. Your personality</h3>', unsafe_allow_html=True)
-        st.caption("Rate how well each statement describes you.")
+        st.markdown('<h3 class="cc-serif">2. YOUR PERSONALITY</h3>', unsafe_allow_html=True)
+        st.caption("RATE HOW WELL EACH STATEMENT DESCRIBES YOU.")
         with st.form("step_personality"):
             big5_answers = rating_grid(all_big5_questions(), "big5")
             c1, c2 = st.columns([1, 3])
             back_clicked = c1.form_submit_button("← Back")
-            next_clicked = c2.form_submit_button("Continue →", type="primary", use_container_width=True)
+            next_clicked = c2.form_submit_button("CONTINUE →", type="primary", use_container_width=True)
         if back_clicked:
             goto(0)
             st.rerun()
@@ -423,8 +423,8 @@ else:
 
     elif st.session_state.step == 2:
         # ---- Step 2: Marks ----
-        st.markdown('<h3 class="cc-serif">3. Your academic marks (%)</h3>', unsafe_allow_html=True)
-        st.caption("Enter your most recent percentage mark for each subject.")
+        st.markdown('<h3 class="cc-serif">3. YOUR ACADEMIC MARKS (%)</h3>', unsafe_allow_html=True)
+        st.caption("ENTER YOUR MOST RECENT PERCENTAGE MARK FOR EACH SUBJECT.")
         with st.form("step_marks"):
             marks = {}
             cols = st.columns(3)
@@ -433,7 +433,7 @@ else:
                     marks[subj] = st.number_input(subj, 0, 100, 55, key=f"mark_{subj}")
             c1, c2 = st.columns([1, 3])
             back_clicked = c1.form_submit_button("← Back")
-            next_clicked = c2.form_submit_button("Continue →", type="primary", use_container_width=True)
+            next_clicked = c2.form_submit_button("CONTINUE →", type="primary", use_container_width=True)
         if back_clicked:
             goto(1)
             st.rerun()
@@ -444,8 +444,8 @@ else:
 
     elif st.session_state.step == 3:
         # ---- Step 3: Situation ----
-        st.markdown('<h3 class="cc-serif">4. Your practical situation</h3>', unsafe_allow_html=True)
-        st.caption("This helps us recommend paths that are realistic for you.")
+        st.markdown('<h3 class="cc-serif">4. YOUR PRACTICAL SITUATION</h3>', unsafe_allow_html=True)
+        st.caption("THIS HELPS US RECOMMEND PATHS THAT ARE REALISTIC FOR YOU.")
         with st.form("step_situation"):
             budget_opts = CONSTRAINT_QUESTIONS["budget_level"]["options"]
             duration_opts = CONSTRAINT_QUESTIONS["duration_pref"]["options"]
@@ -459,8 +459,8 @@ else:
                     duration_pref = st.radio(CONSTRAINT_QUESTIONS["duration_pref"]["question"],
                                               options=list(duration_opts.keys()), format_func=lambda k: duration_opts[k])
             c1, c2 = st.columns([1, 3])
-            back_clicked = c1.form_submit_button("← Back")
-            next_clicked = c2.form_submit_button("See my results →", type="primary", use_container_width=True)
+            back_clicked = c1.form_submit_button("← BACK")
+            next_clicked = c2.form_submit_button("SEE MY RESULTS →", type="primary", use_container_width=True)
         if back_clicked:
             goto(2)
             st.rerun()
@@ -473,7 +473,7 @@ else:
     else:
         # ---- Step 4: Results ----
         if not has_complete_answers():
-            st.warning("Complete the assessment first to see your results.")
+            st.warning("COMPLETE THE ASSESSMENT FIRST TO SEE YOUR RESULTS.")
             if st.button("Start the assessment"):
                 st.session_state.step = 0
                 st.rerun()
@@ -486,8 +486,8 @@ else:
                                             a["budget_level"], a["duration_pref"])
             results = recommender.recommend(student, top_n=5)
 
-            st.markdown('<h3 class="cc-serif">🎯 Your top career matches</h3>', unsafe_allow_html=True)
-            st.caption("Ranked by overall fit across your interests, personality, marks, and circumstances.")
+            st.markdown('<h3 class="cc-serif">🎯 YOUR TOP CAREER MATCHES</h3>', unsafe_allow_html=True)
+            st.caption("RANKED BY OVERALL FIT ACROSS YOUR INTERESTS, PERSONALITY, MARKS, AND CIRCUMSTANCES")
 
             for i, r in enumerate(results, 1):
                 c = r["career_obj"]
