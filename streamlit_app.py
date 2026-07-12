@@ -265,9 +265,9 @@ if st.session_state.page == "home":
     st.markdown('<div class="cc-searchbar">', unsafe_allow_html=True)
     s1, s2, s3 = st.columns([1.2, 3, 0.6])
     with s1:
-        section_choice = st.selectbox("Jump to", ["Select a section"] + STEPS, label_visibility="collapsed")
+        section_choice = st.selectbox("Jump to", ["SELECT A SECTION"] + STEPS, label_visibility="collapsed")
     with s2:
-        st.text_input("Search", placeholder="Search careers or subjects (coming soon)", label_visibility="collapsed")
+        st.text_input("Search", placeholder="SEARCH CAREERS OR SUBJECTS (COMING SOON)", label_visibility="collapsed")
     with s3:
         if st.button("🔍", use_container_width=True) and section_choice != "Select a section":
             st.session_state.page = "assessment"
