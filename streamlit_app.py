@@ -170,7 +170,7 @@ def rating_grid(questions, key_prefix):
                     q, min_value=1, max_value=5, value=3, step=1,
                     key=f"{key_prefix}_{i}", label_visibility="collapsed"
                 )
-    st.caption("1 = not at all · 5 = a great deal")
+    st.caption("1 = NOT AT ALL · 5 = A GREAT DEAL")
     return answers
 
 
