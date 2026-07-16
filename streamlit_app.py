@@ -362,8 +362,8 @@ elif st.session_state.page == "contact":
     with st.container(border=True):
         st.markdown('<h3 class="cc-serif">CONTACT US</h3>', unsafe_allow_html=True)
         cc1, cc2 = st.columns(2)
-        cc1.markdown(f"📞 **Phone**\n\n{CONTACT_PHONE}")
-        cc2.markdown(f"✉️ **Email**\n\n{CONTACT_EMAIL}")
+        cc1.markdown(f"📞 **PHONE**\n\n{CONTACT_PHONE}")
+        cc2.markdown(f"✉️ **EMAIL**\n\n{CONTACT_EMAIL}")
 
     st.write("")
     st.warning(
