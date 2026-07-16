@@ -65,11 +65,11 @@ st.markdown(f"""
     /* ---------- Career Cards ---------- */
 
 .career-card{
-    background:#121826;
+    background:#111827;
     border:1px solid #1F2937;
     border-radius:18px;
     padding:22px;
-    margin-bottom:22px;
+    margin-bottom:28px;
     color:white;
     transition:0.25s;
 }
@@ -158,13 +158,14 @@ st.markdown(f"""
 .subscribe-btn{
     width:100%;
     text-align:center;
-    background:#183B46;
-    border:1px solid #36C3D9;
+    background:#193547;
+    border:1px solid #2E6D87;
     border-radius:10px;
-    padding:10px;
-    color:#8BE9FD;
-    font-weight:700;
+    padding:12px;
+    color:#6BD5FF;
+    font-weight:600;
     font-size:15px;
+    cursor:pointer;
 }
 
     .cc-serif {{ font-family: 'Fraunces', serif; }}
