@@ -62,6 +62,111 @@ CONFUSION_IMAGE="Screenshot 2026-06-11 163348.png"
 st.markdown(f"""
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+    /* ---------- Career Cards ---------- */
+
+.career-card{
+    background:#121826;
+    border:1px solid #1F2937;
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:22px;
+    color:white;
+    transition:0.25s;
+}
+
+.career-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 25px rgba(0,0,0,.35);
+}
+
+.career-avatar{
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#6EE7F9,#A78BFA);
+    margin-bottom:15px;
+}
+
+.career-name{
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:2px;
+}
+
+.career-sector{
+    color:#9CA3AF;
+    font-size:14px;
+    margin-bottom:12px;
+}
+
+.career-description{
+    color:#D1D5DB;
+    min-height:60px;
+    line-height:1.45;
+    font-size:15px;
+    margin-bottom:15px;
+}
+
+.tag{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+    margin-right:6px;
+    margin-bottom:8px;
+}
+
+.tag-green{
+    background:#1E3A2B;
+    color:#67E8A3;
+}
+
+.tag-blue{
+    background:#153E75;
+    color:#7DD3FC;
+}
+
+.tag-orange{
+    background:#5B3A1A;
+    color:#FDBA74;
+}
+
+.card-divider{
+    border-top:1px solid #253041;
+    margin-top:16px;
+    margin-bottom:14px;
+}
+
+.card-stats{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:18px;
+}
+
+.stat-title{
+    color:#9CA3AF;
+    font-size:13px;
+}
+
+.stat-value{
+    font-size:24px;
+    font-weight:700;
+    color:#4ADE80;
+}
+
+.subscribe-btn{
+    width:100%;
+    text-align:center;
+    background:#183B46;
+    border:1px solid #36C3D9;
+    border-radius:10px;
+    padding:10px;
+    color:#8BE9FD;
+    font-weight:700;
+    font-size:15px;
+}
+
     .cc-serif {{ font-family: 'Fraunces', serif; }}
     .cc-question {{ font-size: 0.95rem; color: #262730; margin-bottom: 0.2rem; }}
     /* Backstop against dark mode: some browsers/OSes force a dark
