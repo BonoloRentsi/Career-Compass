@@ -360,7 +360,7 @@ if st.session_state.page == "home":
 # ============================================================================
 elif st.session_state.page == "contact":
     with st.container(border=True):
-        st.markdown('<h3 class="cc-serif">Contact us</h3>', unsafe_allow_html=True)
+        st.markdown('<h3 class="cc-serif">CONTACT US</h3>', unsafe_allow_html=True)
         cc1, cc2 = st.columns(2)
         cc1.markdown(f"📞 **Phone**\n\n{CONTACT_PHONE}")
         cc2.markdown(f"✉️ **Email**\n\n{CONTACT_EMAIL}")
@@ -486,7 +486,7 @@ else:
                                             a["budget_level"], a["duration_pref"])
             results = recommender.recommend(student, top_n=5)
 
-            st.markdown('<h3 class="cc-serif">🎯 YOUR TOP CAREER MATCHES</h3>', unsafe_allow_html=True)
+            st.markdown('<h3 class="cc-serif">YOUR TOP CAREER MATCHES</h3>', unsafe_allow_html=True)
             st.caption("RANKED BY OVERALL FIT ACROSS YOUR INTERESTS, PERSONALITY, MARKS, AND CIRCUMSTANCES")
 
             for i, r in enumerate(results, 1):
@@ -515,7 +515,7 @@ else:
                             st.markdown(f"- {step}")
 
             st.write("")
-            if st.button("↺ Start over"):
+            if st.button("↺ START OVER"):
                 st.session_state.step = 0
                 st.session_state.answers = {}
                 st.session_state.max_reached = 0
