@@ -8,44 +8,60 @@ collect from the user before calling the recommender.
 """
 
 RIASEC_ITEMS = {
-    "R": ["I enjoy fixing or building things with my hands.",
-          "I'd rather work outdoors or with tools/machines than sit at a desk all day."],
-    "I": ["I like figuring out how things work or solving puzzles.",
-          "I enjoy science experiments or researching a topic deeply."],
-    "A": ["I enjoy drawing, music, writing or other creative expression.",
-          "I like coming up with original ideas rather than following a fixed method."],
-    "S": ["I enjoy helping, teaching or caring for other people.",
-          "I'd rather work in a team helping others than work alone."],
-    "E": ["I enjoy leading a group or convincing people of an idea.",
-          "I like taking initiative and starting new projects or ventures."],
-    "C": ["I enjoy organising information, schedules or records.",
-          "I prefer clear rules and structured tasks over ambiguity."],
+"R": ["I ENJOY FIXING OR BUILDING THINGS WITH MY HANDS.",
+      "I'D RATHER WORK OUTDOORS OR WITH TOOLS/MACHINES THAN SIT AT A DESK ALL DAY."],
+
+"I": ["I LIKE FIGURING OUT HOW THINGS WORK OR SOLVING PUZZLES.",
+      "I ENJOY SCIENCE EXPERIMENTS OR RESEARCHING A TOPIC DEEPLY."],
+
+"A": ["I ENJOY DRAWING, MUSIC, WRITING OR OTHER CREATIVE EXPRESSION.",
+      "I LIKE COMING UP WITH ORIGINAL IDEAS RATHER THAN FOLLOWING A FIXED METHOD."],
+
+"S": ["I ENJOY HELPING, TEACHING OR CARING FOR OTHER PEOPLE.",
+      "I'D RATHER WORK IN A TEAM HELPING OTHERS THAN WORK ALONE."],
+
+"E": ["I ENJOY LEADING A GROUP OR CONVINCING PEOPLE OF AN IDEA.",
+      "I LIKE TAKING INITIATIVE AND STARTING NEW PROJECTS OR VENTURES."],
+
+"C": ["I ENJOY ORGANISING INFORMATION, SCHEDULES OR RECORDS.",
+      "I PREFER CLEAR RULES AND STRUCTURED TASKS OVER AMBIGUITY."],
 }
 
 BIG5_ITEMS = {
-    "openness": ["I enjoy learning about new and unusual topics.",
-                 "I like trying new approaches rather than sticking to routine."],
-    "conscientiousness": ["I plan ahead and follow through on tasks.",
-                           "I pay close attention to detail and accuracy."],
-    "extraversion": ["I feel energised being around other people.",
-                      "I speak up easily in group settings."],
-    "agreeableness": ["I try to keep peace and support others' needs.",
-                       "I find it easy to trust and cooperate with people."],
-    "neuroticism": ["I get stressed easily under pressure.",
-                     "My mood changes quickly when things go wrong."],
+"openness": ["I ENJOY LEARNING ABOUT NEW AND UNUSUAL TOPICS.",
+             "I LIKE TRYING NEW APPROACHES RATHER THAN STICKING TO ROUTINE."],
+
+"conscientiousness": ["I PLAN AHEAD AND FOLLOW THROUGH ON TASKS.",
+                      "I PAY CLOSE ATTENTION TO DETAIL AND ACCURACY."],
+
+"extraversion": ["I FEEL ENERGISED BEING AROUND OTHER PEOPLE.",
+                 "I SPEAK UP EASILY IN GROUP SETTINGS."],
+
+"agreeableness": ["I TRY TO KEEP PEACE AND SUPPORT OTHERS' NEEDS.",
+                  "I FIND IT EASY TO TRUST AND COOPERATE WITH PEOPLE."],
+
+"neuroticism": ["I GET STRESSED EASILY UNDER PRESSURE.",
+                "MY MOOD CHANGES QUICKLY WHEN THINGS GO WRONG."],
 }
 
 CONSTRAINT_QUESTIONS = {
-    "budget_level": {
-        "question": "What is your realistic funding access for further study?",
-        "options": {1: "Very limited — need free/low-cost routes (TVET, learnerships, bursaries only)",
-                    2: "Moderate — NSFAS/loan or part-funded is workable",
-                    3: "Good — can access full university fees via bursary, loan or family support"}
-    },
-    "duration_pref": {
-        "question": "How long are you willing/able to study before earning an income?",
-        "options": {1: "Short — up to 2 years", 2: "Medium — 3 to 4 years", 3: "Long — 5+ years"}
-    },
+"budget_level": {
+    "question": "WHAT IS YOUR REALISTIC FUNDING ACCESS FOR FURTHER STUDY?",
+    "options": {
+        1: "VERY LIMITED — NEED FREE/LOW-COST ROUTES (TVET, LEARNERSHIPS, BURSARIES ONLY)",
+        2: "MODERATE — NSFAS/LOAN OR PART-FUNDED IS WORKABLE",
+        3: "GOOD — CAN ACCESS FULL UNIVERSITY FEES VIA BURSARY, LOAN OR FAMILY SUPPORT"
+    }
+},
+
+"duration_pref": {
+    "question": "HOW LONG ARE YOU WILLING/ABLE TO STUDY BEFORE EARNING AN INCOME?",
+    "options": {
+        1: "SHORT — UP TO 2 YEARS",
+        2: "MEDIUM — 3 TO 4 YEARS",
+        3: "LONG — 5+ YEARS"
+    }
+},
 }
 
 
