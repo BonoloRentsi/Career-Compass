@@ -58,12 +58,12 @@ STRIP_COLORS = ["#2F7A4F", "#3B7FB5", "#D9822B", "#E8C93B"]
 # on the reference "Top Mentors" grid (dark panel, gradient avatars,
 # colour-coded tag pills, a bold stat row, and an outlined pill button).
 # ------------------------------------------------------------------------
-CARD_PANEL_BG = "#0D1117"
-CARD_BG = "#141A24"
-CARD_BORDER = "#232B3A"
-CARD_TEXT = "#F5F7FA"
-CARD_TEXT_MUTED = "#8A93A6"
-CARD_STAT_ACCENT = "#3ECF8E"
+CARD_PANEL_BG = NAVY_DARK      # "#26344A"
+CARD_BG = "#FFFFFF"
+CARD_BORDER = LINE             # "#DDE0E3"
+CARD_TEXT = INK                # "#242423"
+CARD_TEXT_MUTED = INK_SOFT     # "#5A6B78"
+CARD_STAT_ACCENT = NAV_GREEN   # "#2F7A4F"
 AVATAR_GRADIENTS = [
     "linear-gradient(135deg,#7B8CFF 0%,#4F6BFF 100%)",
     "linear-gradient(135deg,#FFB199 0%,#FF7A59 100%)",
