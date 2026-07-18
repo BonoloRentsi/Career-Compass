@@ -24,9 +24,9 @@ Notes on this version:
       ourselves (safe — doesn't depend on Streamlit's internal DOM).
     - Four "pages": Home, Assessment (the questionnaire wizard +
       results), and Contact. The site nav bar switches between them.
-    - The Results step renders each recommendation as a dark "mentor
-      card" (avatar, tags, stat row, details button) matching the
-      reference mock-up, inside its own dark panel.
+    - Results are shown as a featured #1 card plus a 2-column grid of
+      match "blocks" (rank badge, match-% pill, progress bar, badges,
+      and an expander for the full explanation/next steps).
     - Requires streamlit >= 1.28 (for st.container(border=True)).
 """
 import streamlit as st
@@ -52,32 +52,7 @@ INK_SOFT = "#5A6B78"
 LINE = "#DDE0E3"
 PALE_BLUE = "#EAF2F8"
 STRIP_COLORS = ["#2F7A4F", "#3B7FB5", "#D9822B", "#E8C93B"]
-
-# ------------------------------------------------------------------------
-# Dark "mentor card" palette — used only for the Results step, modelled
-# on the reference "Top Mentors" grid (dark panel, gradient avatars,
-# colour-coded tag pills, a bold stat row, and an outlined pill button).
-# ------------------------------------------------------------------------
-CARD_PANEL_BG = NAVY_DARK      # "#26344A"
-CARD_BG = "#FFFFFF"
-CARD_BORDER = LINE             # "#DDE0E3"
-CARD_TEXT = INK                # "#242423"
-CARD_TEXT_MUTED = INK_SOFT     # "#5A6B78"
-CARD_STAT_ACCENT = NAV_GREEN   # "#2F7A4F"
-AVATAR_GRADIENTS = [
-    "linear-gradient(135deg,#7B8CFF 0%,#4F6BFF 100%)",
-    "linear-gradient(135deg,#FFB199 0%,#FF7A59 100%)",
-    "linear-gradient(135deg,#6EE7C4 0%,#34D1A6 100%)",
-    "linear-gradient(135deg,#FF9AC4 0%,#D970B8 100%)",
-    "linear-gradient(135deg,#8FD3E8 0%,#5B8FD9 100%)",
-    "linear-gradient(135deg,#F6D186 0%,#F2A65A 100%)",
-]
-TAG_STYLES = [
-    ("rgba(217,169,60,0.16)", "#E8C36B"),   # gold
-    ("rgba(79,184,174,0.18)", "#6FE0D2"),   # teal
-    ("rgba(139,110,255,0.18)", "#B39DFF"),  # purple
-    ("rgba(59,127,181,0.20)", "#7FB8E0"),   # blue
-]
+RANK_COLORS = ["#2F7A4F", "#3B7FB5", "#D9822B", "#26344A", "#26344A"]
 
 # Fill these in with your real details before deploying.
 CONTACT_PHONE = "+27 00 000 0000"
@@ -86,12 +61,11 @@ CONTACT_EMAIL = "hello@careercompass.co.za"
 SCREENSHOT_1 = "Screenshot 2026-06-11 163438.png"
 SCREENSHOT_2 = "Screenshot 2026-06-11 163447.png"
 
-CONFUSION_IMAGE="Screenshot 2026-06-11 163348.png"
+CONFUSION_IMAGE = "Screenshot 2026-06-11 163348.png"
 
 st.markdown(f"""
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-
     .cc-serif {{ font-family: 'Fraunces', serif; }}
     .cc-question {{ font-size: 0.95rem; color: #262730; margin-bottom: 0.2rem; }}
     /* Backstop against dark mode: some browsers/OSes force a dark
@@ -150,80 +124,26 @@ st.markdown(f"""
         font-weight: 600; letter-spacing: 0.04em; font-size: 0.92rem;
         border-bottom: 3px solid {TEAL};
     }}
-
-    /* ------------------------------------------------------------------
-       Mentor-style result cards (dark panel, used only on the Results
-       step of the assessment).
-       ------------------------------------------------------------------ */
-    .cc-dark-panel {{
-        background: {CARD_PANEL_BG}; border-radius: 16px;
-        padding: 1.8rem 1.8rem 1.2rem 1.8rem; margin-bottom: 1rem;
-    }}
-    .cc-dark-panel-title {{
-        color: {CARD_TEXT}; font-size: 1.3rem; font-weight: 700;
-        margin-bottom: 0.2rem;
-    }}
-    .cc-dark-panel-sub {{
-        color: {CARD_TEXT_MUTED}; font-size: 0.85rem; margin-bottom: 1.2rem;
-        letter-spacing: 0.03em;
-    }}
-    .cc-mcard {{
-        background: {CARD_BG}; border: 1px solid {CARD_BORDER};
-        border-radius: 14px; padding: 1.2rem 1.3rem 1rem 1.3rem;
-        margin-bottom: 1.1rem; height: 100%;
-    }}
-    .cc-mcard-avatar {{
-        width: 52px; height: 52px; border-radius: 50%;
+    /* Results — match cards */
+    .cc-rank-badge {{
         display: flex; align-items: center; justify-content: center;
-        color: #FFFFFF; font-weight: 700; font-size: 1.2rem;
-        font-family: 'Fraunces', serif; margin-bottom: 0.7rem;
+        width: 2.4rem; height: 2.4rem; border-radius: 50%; color: #FFFFFF;
+        font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.1rem;
+        flex-shrink: 0;
     }}
-    .cc-mcard-title {{
-        color: {CARD_TEXT}; font-weight: 700; font-size: 1.05rem;
-        line-height: 1.25; margin-bottom: 0.05rem;
+    .cc-match-pill {{
+        background: {PALE_BLUE}; color: {NAVY_DARK}; padding: 0.3rem 0.85rem;
+        border-radius: 999px; font-weight: 700; font-size: 0.95rem; white-space: nowrap;
     }}
-    .cc-mcard-sub {{
-        color: {CARD_TEXT_MUTED}; font-size: 0.82rem; margin-bottom: 0.7rem;
+    .cc-featured-pill {{
+        background: {NAV_GREEN}; color: #FFFFFF; padding: 0.35rem 1rem;
+        border-radius: 999px; font-weight: 700; font-size: 1rem; white-space: nowrap;
     }}
-    .cc-mcard-desc {{
-        color: #C3CAD6; font-size: 0.86rem; line-height: 1.4;
-        margin-bottom: 0.85rem; min-height: 3.6rem;
+    .cc-card-header {{
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 1rem; margin-bottom: 0.6rem;
     }}
-    .cc-mcard-tags {{ margin-bottom: 0.9rem; }}
-    .cc-mcard-tag {{
-        display: inline-block; border-radius: 999px; padding: 0.22rem 0.7rem;
-        font-size: 0.74rem; font-weight: 600; margin: 0 0.35rem 0.35rem 0;
-    }}
-    .cc-mcard-stats {{
-        display: flex; justify-content: space-between; align-items: flex-end;
-        border-top: 1px solid {CARD_BORDER}; padding-top: 0.85rem;
-        margin-bottom: 0.9rem;
-    }}
-    .cc-mcard-stat-label {{
-        color: {CARD_TEXT_MUTED}; font-size: 0.68rem; text-transform: uppercase;
-        letter-spacing: 0.04em; margin-bottom: 0.15rem;
-    }}
-    .cc-mcard-stat-value {{
-        color: {CARD_TEXT}; font-weight: 700; font-size: 1.05rem;
-    }}
-    .cc-mcard-stat-value.accent {{ color: {CARD_STAT_ACCENT}; }}
-    .cc-mcard-details {{
-        background: rgba(255,255,255,0.03); border: 1px solid {CARD_BORDER};
-        border-radius: 10px; padding: 0.9rem 1rem; margin: -0.2rem 0 1rem 0;
-        color: #C3CAD6; font-size: 0.85rem; line-height: 1.5;
-    }}
-    .cc-mcard-details b {{ color: {CARD_TEXT}; }}
-    /* Style the real Streamlit button that sits inside a card wrapper so
-       it reads as the rounded, outlined "Subscribe"-style pill. */
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(.cc-mcard-btnflag) .stButton > button,
-    .cc-mcard-btnwrap .stButton > button {{
-        width: 100%; background: transparent; color: {TEAL};
-        border: 1px solid {TEAL}; border-radius: 8px; font-weight: 600;
-        padding: 0.45rem 0; transition: background 0.15s ease;
-    }}
-    .cc-mcard-btnwrap .stButton > button:hover {{
-        background: rgba(79,184,174,0.12); color: {TEAL}; border-color: {TEAL};
-    }}
+    .cc-card-title-row {{ display: flex; align-items: center; gap: 0.8rem; }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -276,6 +196,40 @@ def rating_grid(questions, key_prefix):
                 )
     st.caption("1 = NOT AT ALL · 5 = A GREAT DEAL")
     return answers
+
+
+def render_match_card(rank, r, featured=False):
+    """Render one career match as a polished card block."""
+    c = r["career_obj"]
+    pct = r["final_score"] * 100
+    accent = RANK_COLORS[min(rank - 1, len(RANK_COLORS) - 1)]
+    with st.container(border=True):
+        pill_class = "cc-featured-pill" if featured else "cc-match-pill"
+        title_size = "1.5rem" if featured else "1.1rem"
+        st.markdown(f"""
+        <div class="cc-card-header">
+            <div class="cc-card-title-row">
+                <div class="cc-rank-badge" style="background:{accent};">{rank}</div>
+                <div class="cc-serif" style="font-size:{title_size}; font-weight:700; color:{NAVY_DARK};">
+                    {r['career']}
+                </div>
+            </div>
+            <div class="{pill_class}">{pct:.0f}% Match</div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.progress(min(max(r["final_score"], 0.0), 1.0))
+        st.markdown(
+            f'<span class="cc-badge">{c["sector"]} · {c["seta"]}</span>'
+            f'<span class="cc-badge">{c["duration_years"]} years study</span>'
+            f'<span class="cc-badge">R{c["salary_entry"]:,}/yr entry</span>',
+            unsafe_allow_html=True
+        )
+        with st.expander("Why this fits, and what's next", expanded=featured):
+            st.write(r["explanation"])
+            st.markdown(f"**What it involves:** {c['description']}")
+            st.markdown("**Next steps:**")
+            for step in c["next_steps"]:
+                st.markdown(f"- {step}")
 
 
 # ============================================================================
@@ -575,7 +529,7 @@ else:
             st.rerun()
 
     else:
-        # ---- Step 4: Results (mentor-card style grid) ----
+        # ---- Step 4: Results ----
         if not has_complete_answers():
             st.warning("COMPLETE THE ASSESSMENT FIRST TO SEE YOUR RESULTS.")
             if st.button("Start the assessment"):
@@ -590,91 +544,27 @@ else:
                                             a["budget_level"], a["duration_pref"])
             results = recommender.recommend(student, top_n=5)
 
-            # Dark panel wrapper (opened here, closed at the very end of
-            # this block) so the whole grid reads as one contained section,
-            # like the reference "Top Mentors" panel.
-            st.markdown('<div class="cc-dark-panel">', unsafe_allow_html=True)
-            st.markdown('<div class="cc-dark-panel-title">Your Top Career Matches</div>', unsafe_allow_html=True)
-            st.markdown(
-                '<div class="cc-dark-panel-sub">RANKED BY OVERALL FIT ACROSS YOUR INTERESTS, '
-                'PERSONALITY, MARKS, AND CIRCUMSTANCES</div>',
-                unsafe_allow_html=True
-            )
+            st.markdown('<h3 class="cc-serif">YOUR TOP CAREER MATCHES</h3>', unsafe_allow_html=True)
+            st.caption("RANKED BY OVERALL FIT ACROSS YOUR INTERESTS, PERSONALITY, MARKS, AND CIRCUMSTANCES")
+            st.write("")
 
-            num_cols = 3
-            rows = [results[i:i + num_cols] for i in range(0, len(results), num_cols)]
+            if results:
+                # ---- #1 match gets a large featured block ----
+                render_match_card(1, results[0], featured=True)
 
-            for row in rows:
-                cols = st.columns(num_cols)
-                for col, r in zip(cols, row):
-                    c = r["career_obj"]
-                    idx = r["career"]  # used for stable per-card keys/colours
-                    pos = results.index(r)
-                    pct = r["final_score"] * 100
-                    avatar_grad = AVATAR_GRADIENTS[pos % len(AVATAR_GRADIENTS)]
-                    initials = "".join(w[0] for w in r["career"].split()[:2]).upper()
-                    handle = "@" + r["career"].lower().replace(" ", "")[:18]
-                    desc = c["description"]
-                    if len(desc) > 110:
-                        desc = desc[:107].rstrip() + "…"
-
-                    tags = [c["sector"], c["seta"], f'{c["duration_years"]} yrs']
-                    tags_html = "".join(
-                        f'<span class="cc-mcard-tag" style="background:{TAG_STYLES[i % len(TAG_STYLES)][0]}; '
-                        f'color:{TAG_STYLES[i % len(TAG_STYLES)][1]};">{t}</span>'
-                        for i, t in enumerate(tags)
-                    )
-
-                    with col:
-                        st.markdown(f"""
-                        <div class="cc-mcard">
-                            <div class="cc-mcard-avatar" style="background:{avatar_grad};">{initials}</div>
-                            <div class="cc-mcard-title">{pos + 1}. {r["career"]}</div>
-                            <div class="cc-mcard-sub">{handle}</div>
-                            <div class="cc-mcard-desc">{desc}</div>
-                            <div class="cc-mcard-tags">{tags_html}</div>
-                            <div class="cc-mcard-stats">
-                                <div>
-                                    <div class="cc-mcard-stat-label">Entry Salary</div>
-                                    <div class="cc-mcard-stat-value">R{c["salary_entry"]:,}</div>
-                                </div>
-                                <div style="text-align:right;">
-                                    <div class="cc-mcard-stat-label">Match</div>
-                                    <div class="cc-mcard-stat-value accent">{pct:.0f}%</div>
-                                </div>
-                            </div>
-                        </div>
-                        """, unsafe_allow_html=True)
-
-                        show_key = f"show_details_{pos}"
-                        if show_key not in st.session_state:
-                            st.session_state[show_key] = (pos == 0)
-
-                        st.markdown('<div class="cc-mcard-btnwrap">', unsafe_allow_html=True)
-                        btn_label = "Hide details" if st.session_state[show_key] else "Why this fits, and what's next"
-                        if st.button(btn_label, key=f"details_btn_{pos}", use_container_width=True):
-                            st.session_state[show_key] = not st.session_state[show_key]
-                            st.rerun()
-                        st.markdown('</div>', unsafe_allow_html=True)
-
-                        if st.session_state[show_key]:
-                            next_steps_html = "".join(f"<li>{s}</li>" for s in c["next_steps"])
-                            st.markdown(f"""
-                            <div class="cc-mcard-details">
-                                {r["explanation"]}<br><br>
-                                <b>What it involves:</b> {c["description"]}<br><br>
-                                <b>Next steps:</b>
-                                <ul style="margin:0.3rem 0 0 1.1rem; padding:0;">{next_steps_html}</ul>
-                            </div>
-                            """, unsafe_allow_html=True)
-
-            st.markdown('</div>', unsafe_allow_html=True)  # close .cc-dark-panel
+                # ---- remaining matches sit in a 2-column grid of blocks ----
+                remaining = list(enumerate(results[1:], start=2))
+                for row_start in range(0, len(remaining), 2):
+                    row = remaining[row_start:row_start + 2]
+                    st.write("")
+                    grid_cols = st.columns(2)
+                    for col, (rank, r) in zip(grid_cols, row):
+                        with col:
+                            render_match_card(rank, r)
 
             st.write("")
             if st.button("↺ START OVER"):
                 st.session_state.step = 0
                 st.session_state.answers = {}
                 st.session_state.max_reached = 0
-                for r in results:
-                    st.session_state.pop(f"show_details_{results.index(r)}", None)
                 st.rerun()
